@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI WMS Competitive Intelligence – KW 26 / 2026</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2330;
+    --border: #30363d;
+    --accent: #00b4d8;
+    --accent2: #90e0ef;
+    --green: #2ea043;
+    --yellow: #d29922;
+    --red: #f85149;
+    --orange: #e0772a;
+    --text: #c9d1d9;
+    --text-muted: #8b949e;
+    --text-bright: #f0f6fc;
+    --mantis: #00b4d8;
+    --aufhol: #e0772a;
+    --opport: #2ea043;
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* ---- HEADER ---- */
+  .header {
+    background: linear-gradient(135deg, #0d1117 0%, #161b22 60%, #0a1929 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 32px 40px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(0,180,216,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text-bright);
+    letter-spacing: -0.5px;
+  }
+  .header h1 span { color: var(--accent); }
+  .header p.sub {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-top: 4px;
+  }
+  .badge-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  .badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid;
+  }
+  .badge-blue  { background: rgba(0,180,216,.12); border-color: var(--accent);  color: var(--accent2); }
+  .badge-green { background: rgba(46,160,67,.12);  border-color: var(--green);   color: #56d364; }
+  .badge-orange{ background: rgba(224,119,42,.12); border-color: var(--orange);  color: #f0a060; }
+
+  /* ---- KW-COMPARE BLOCK ---- */
+  .kw-compare {
+    margin: 20px 40px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+  }
+  .kw-compare h2 {
+    font-size: 15px;
+    color: var(--text-bright);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .kw-compare h2::before {
+    content: '⚡';
+    font-size: 16px;
+  }
+  .compare-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+  }
+  .compare-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    text-align: center;
+  }
+  .compare-card .num {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+  }
+  .compare-card .lbl {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  .compare-movers {
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.7;
+  }
+  .compare-movers strong { color: var(--accent2); }
+
+  /* ---- STICKY FILTER BAR ---- */
+  .filter-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #0d1117ee;
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 40px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .filter-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-right: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+  .tab-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all .2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tab-btn .count {
+    background: var(--border);
+    border-radius: 10px;
+    padding: 1px 6px;
+    font-size: 11px;
+  }
+  .tab-btn:hover { border-color: var(--accent); color: var(--text); }
+  .tab-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .tab-btn.active .count { background: rgba(255,255,255,.25); }
+
+  /* ---- MAIN CONTENT ---- */
+  .main { padding: 20px 40px 60px; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 24px 0 14px;
+  }
+  .section-header h3 {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ---- USE CASE ITEMS ---- */
+  .use-case-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: border-color .2s;
+  }
+  .use-case-item:hover { border-color: var(--accent); }
+  .use-case-item[data-verdict="mantis"] { border-left: 3px solid var(--mantis); }
+  .use-case-item[data-verdict="aufhol"]  { border-left: 3px solid var(--aufhol); }
+  .use-case-item[data-verdict="opport"]  { border-left: 3px solid var(--opport); }
+
+  .uc-header {
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .uc-header:hover { background: var(--surface2); }
+
+  .vendor-tag {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .uc-title {
+    flex: 1;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-bright);
+  }
+
+  .kw-tag {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .kw-new   { background: rgba(46,160,67,.18);  color: #56d364; border: 1px solid #2ea04380; }
+  .kw-dev   { background: rgba(210,153,34,.18);  color: #e6b800; border: 1px solid #d2992280; }
+  .kw-same  { background: rgba(139,148,158,.12); color: var(--text-muted); border: 1px solid var(--border); }
+
+  .verdict-tag {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .v-mantis { background: rgba(0,180,216,.15);  color: var(--accent2); border: 1px solid rgba(0,180,216,.4); }
+  .v-aufhol { background: rgba(224,119,42,.15); color: #f0a060; border: 1px solid rgba(224,119,42,.4); }
+  .v-opport { background: rgba(46,160,67,.15);  color: #56d364; border: 1px solid rgba(46,160,67,.4); }
+
+  .chevron {
+    color: var(--text-muted);
+    font-size: 16px;
+    transition: transform .2s;
+    flex-shrink: 0;
+  }
+  .uc-header.open .chevron { transform: rotate(90deg); }
+
+  .uc-body {
+    display: none;
+    padding: 0 18px 16px 18px;
+    border-top: 1px solid var(--border);
+  }
+  .uc-body.open { display: block; }
+
+  .uc-desc {
+    color: var(--text);
+    font-size: 13px;
+    margin-top: 12px;
+    line-height: 1.7;
+  }
+  .uc-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .meta-chip {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 3px 10px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .meta-chip strong { color: var(--text); }
+
+  .mantis-box {
+    margin-top: 12px;
+    background: var(--surface2);
+    border-left: 3px solid;
+    border-radius: 0 6px 6px 0;
+    padding: 10px 14px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .mantis-box.mantis { border-color: var(--mantis); }
+  .mantis-box.aufhol { border-color: var(--aufhol); }
+  .mantis-box.opport { border-color: var(--opport); }
+  .mantis-box .box-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin-bottom: 4px;
+  }
+  .mantis-box.mantis .box-label { color: var(--accent); }
+  .mantis-box.aufhol .box-label { color: var(--orange); }
+  .mantis-box.opport .box-label { color: var(--green); }
+
+  /* ---- MVP RECOMMENDATIONS ---- */
+  .mvp-section {
+    margin-top: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px 24px;
+  }
+  .mvp-section h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .mvp-item {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .mvp-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .mvp-prio {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .mvp-prio.p1 { background: rgba(0,180,216,.2); color: var(--accent); border: 1px solid var(--accent); }
+  .mvp-prio.p2 { background: rgba(46,160,67,.2);  color: #56d364; border: 1px solid var(--green); }
+  .mvp-prio.p3 { background: rgba(224,119,42,.2); color: #f0a060; border: 1px solid var(--orange); }
+  .mvp-content h4 { font-size: 13px; font-weight: 700; color: var(--text-bright); }
+  .mvp-content p  { font-size: 13px; color: var(--text-muted); margin-top: 3px; line-height: 1.5; }
+
+  /* ---- FOOTER ---- */
+  .footer {
+    text-align: center;
+    padding: 20px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+
+  /* ---- NO RESULTS ---- */
+  .no-results {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-muted);
+    display: none;
+  }
+
+  /* ---- RESPONSIVE ---- */
+  @media(max-width: 640px) {
+    .header, .main, .kw-compare { padding-left: 16px; padding-right: 16px; }
+    .filter-bar { padding: 10px 16px; }
+    .uc-title { font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1>AI WMS Competitive Intelligence <span>KW 26 · 2026</span></h1>
+      <p class="sub">22.–28. Juni 2026 · Mantis LVS / ecovium · DACH-Fokus</p>
+    </div>
+    <div style="text-align:right; color: var(--text-muted); font-size:12px; line-height:1.8;">
+      <div>🗓 Berichtszeitraum: KW 26</div>
+      <div>🔍 Quellen: Business Wire, SDCE, Logistra, Logistics Viewpoints, Gartner</div>
+      <div>📌 Baseline: KW 20 / 2026</div>
+    </div>
+  </div>
+  <div class="badge-row">
+    <span class="badge badge-blue">✅ Mantis kann das: 4</span>
+    <span class="badge badge-orange">⚠️ Aufholbedarf: 5</span>
+    <span class="badge badge-green">🚀 Opportunität: 4</span>
+  </div>
+</div>
+
+<!-- KW-VERGLEICH -->
+<div class="kw-compare">
+  <h2>KW 26 vs. KW 20 – Was hat sich verändert?</h2>
+  <div class="compare-grid">
+    <div class="compare-card">
+      <span class="num">13</span>
+      <div class="lbl">Relevante AI Use Cases gesamt</div>
+    </div>
+    <div class="compare-card">
+      <span class="num" style="color:#56d364;">4</span>
+      <div class="lbl">🆕 Neu (nicht in KW 20)</div>
+    </div>
+    <div class="compare-card">
+      <span class="num" style="color:#e6b800;">7</span>
+      <div class="lbl">📈 Weiterentwickelt</div>
+    </div>
+    <div class="compare-card">
+      <span class="num" style="color:var(--text-muted);">2</span>
+      <div class="lbl">➡ Unverändert</div>
+    </div>
+    <div class="compare-card">
+      <span class="num">3</span>
+      <div class="lbl">Top-Mover dieser Woche</div>
+    </div>
+  </div>
+  <div class="compare-movers" style="margin-top:16px; background:var(--surface2); border-radius:8px; padding:14px;">
+    <strong>Top-Mover KW 26:</strong><br>
+    🥇 <strong>Infios (Körber)</strong> – Konkrete WMS-AI-Features veröffentlicht (09.06.): Intelligent Error Resolution, Knowledge Assistant, Workforce Coaching. Erste greifbare, produktionsreife AI-Einbettung ins Core-WMS – starker Signal-to-Noise-Vorteil gegenüber Ankündigungs-Heavy-Playern.<br>
+    🥈 <strong>Blue Yonder</strong> – Q1-2026-Highlights plus ICON 2026: Warehouse Ops Agent weiterentwickelt, BlueYonder Orchestrator eingeführt, NVIDIA-Partnership. Autonome Multi-Agent-Architektur als Differenzierungsstrategie.<br>
+    🥉 <strong>Manhattan Associates</strong> – Solution Design Studio (AI-native WMS-Konfiguration via Natural Language) verändert den Implementierungsmarkt fundamental. KW 26 war Nachberichtswoche des Momentum-Conferences.
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <span class="filter-label">Filter:</span>
+  <button class="tab-btn active" data-filter="all">Alle <span class="count" id="cnt-all">13</span></button>
+  <button class="tab-btn" data-filter="mantis">✅ Mantis kann das <span class="count" id="cnt-mantis">4</span></button>
+  <button class="tab-btn" data-filter="aufhol">⚠️ Aufholbedarf <span class="count" id="cnt-aufhol">5</span></button>
+  <button class="tab-btn" data-filter="opport">🚀 Opportunität <span class="count" id="cnt-opport">4</span></button>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- SECTION: NEU -->
+  <div class="section-header">
+    <h3>🆕 Neu in KW 26</h3>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- UC1: Infios Error Resolution -->
+  <div class="use-case-item" data-vendor="infios" data-verdict="aufhol">
+    <div class="uc-header" onclick="toggleUC(this)">
+      <span class="vendor-tag">INFIOS</span>
+      <span class="uc-title">AI Intelligent Error Resolution im WMS-Workflow</span>
+      <span class="kw-tag kw-new">🆕 Neu</span>
+      <span class="verdict-tag v-aufhol">⚠️ Aufholbedarf</span>
+      <span class="chevron">›</span>
+    </div>
+    <div class="uc-body">
+      <p class="uc-desc">
+        <strong>Infios</strong> hat am 9. Juni 2026 drei WMS-native AI-Capabilities angekündigt. Die erste: <em>Intelligent Error Resolution</em> – nutzt Echtzeit-WMS-Daten, um blockierte Aufträge oder falsch platzierte Bestände automatisch zu diagnostizieren und Root-Cause-Empfehlungen zu liefern, ohne manuelle Eskalation. Das System agiert innerhalb bestehender Workflows ohne separate KI-Oberfläche.
+      </p>
+      <div class="uc-meta">
+        <span class="meta-chip"><strong>Quelle:</strong> Business Wire, 09.06.2026</span>
+        <span class="meta-chip"><strong>Kontext:</strong> WMS Execution Layer</span>
+        <span class="meta-chip"><strong>Region:</strong> Global / DACH-Relevanz</span>
+        <span class="meta-chip"><strong>AI-Typ:</strong> ML-basierte Root-Cause-Analyse + Recommender</span>
+      </div>
+      <div class="mantis-box aufhol">
+        <div class="box-label">⚠️ Mantis-Bewertung: Aufholbedarf</div>
+        Mantis LVS bietet regelbasierte Ausnahmenbehandlung, jedoch keine ML-gestützte automatische Root-Cause-Diagnose für blockierte Aufträge. Angesichts der 600+ Kundenbasis und typischer 3PL-Komplexität ist dies eine operative Schwachstelle. Priorität: mittel-hoch.
+      </div>
+    </div>
+  </div>
+
+  <!-- UC2: Infios Knowledge Assistant -->
+  <div class="use-case-item" data-vendor="infios" data-verdict="opport">
+    <div class="uc-header" onclick="toggleUC(this)">
+      <span class="vendor-tag">INFIOS</span>
+      <span class="uc-title">AI-Powered Knowledge Assistant (Natural Language im WMS)</span>
+      <span class="kw-tag kw-new">🆕 Neu</span>
+      <span class="verdict-tag v-opport">🚀 Opportunität</span>
+      <span class="chevron">›</span>
+    </div>
+    <div class="uc-body">
+      <p class="uc-desc">
+        In derselben Ankündigung: Ein <em>AI-Powered Knowledge Assistant</em>, der über ein Chat-Interface Operatoren direkt mit Prozessdokumenten und SOPs verbindet – in natürlicher Sprache, ohne Supervisor-Warten. Zielt auf schnelleres Onboarding und konsistente Prozesstreue im Lageralltag.
+      </p>
+      <div class="uc-meta">
+        <span class="meta-chip"><strong>Quelle:</strong> Logistra / Business Wire, 09.06.2026</span>
+        <span class="meta-chip"><strong>AI-Typ:</strong> GenAI / RAG über WMS-Dokumenten</span>
+        <span class="meta-chip"><strong>Zielgruppe:</strong> Lageroperatoren, Onboarding</span>
+      </div>
+      <div class="mantis-box opport">
+        <div class="box-label">🚀 Opportunität für Mantis LVS</div>
+        Mantis hat noch keinen eingebetteten Knowledge-Assistenten. Da ecovium im März 2026 spezialisierte KI-Teams aufgebaut hat (AI-native Architektur als strategische Säule) und CTO Jens Unger aktiv zu Agentic AI publiziert (MM Logistik, 23.06.2026), ist ein Mantis-eigener WMS-Copilot auf Basis der SimpleChain-AI-Plattform realistisch umsetzbar. Differenzierungspotenzial: DACH-Sprachunterstützung + Mantis-spezifische Prozessdokumentation.
+      </div>
+    </div>
+  </div>
+
+  <!-- UC3: Infios Workforce Coaching -->
+  <div class="use-case-item" data-vendor="infios" data-verdict="opport">
+    <div class="uc-header" onclick="toggleUC(this)">
+      <span class="vendor-tag">INFIOS</span>
+      <span class="uc-title">AI Warehouse Associate Coaching (Performance-Analytics)</span>
+      <span class="kw-tag kw-new">🆕 Neu</span>
+      <span class="verdict-tag v-opport">🚀 Opportunität</span>
+      <span class="chevron">›</span>
+    </div>
+    <div class="uc-body">
+      <p class="uc-desc">
+        Dritte Infios-Funktion: <em>Warehouse Associate Coaching</em> – analysiert Leistungsdaten einzelner Mitarbeiter in Echtzeit, identifiziert Root Causes für Performance-Abweichungen und liefert Supervisoren personalisierte Coaching-Empfehlungen ohne manuelle Auswertung.
+      </p>
+      <div class="uc-meta">
+        <span class="meta-chip"><strong>Quelle:</strong> Business Wire / SDCE, 09.06.2026</span>
+        <span class="meta-chip"><strong>AI-Typ:</strong> Predictive Labor Analytics</span>
+        <span class="meta-chip"><strong>Abgrenzung zu kw20:</strong> Erstmalig als WMS-native Feature</span>
+      </div>
+      <div class="mantis-box opport">
+        <div class="box-label">🚀 Opportunität für Mantis LVS</div>
+        Mantis verfügt über Dashboard-basierte Transparenz und Bewegungshistorie, jedoch kein ML-gestütztes Coaching. Im DACH-Mittelstand ist individuelles Performance-Coaching ein realer Schmerz – Fachkräftemangel und hohe Fluktuation machen das Onboarding-Potenzial dieses Features besonders relevant. Umsetzbar via SimpleChain-AI + vorhandene Mantis-Leistungsdaten.
+      </div>
+    </div>
+  </div>
+
+  <!-- UC4: Manhattan Solution Design Studio -->
+  <div class="use-case-item" data-vendor="manhattan" data-verdict="aufhol">
+    <div class="uc-header" onclick="toggleUC(this)">
+      <span class="vendor-tag">MANHATTAN</span>
+      <span class="uc-title">Solution Design Studio – AI-Native WMS-Konfiguration via Natural Language</span>
+      <span class="kw-tag kw-new">🆕 Neu</span>
+      <span class="verdict-tag v-aufhol">⚠️ Aufholbedarf</span>
+      <span class="chevron">›</span>
+    </div>
+    <div class="uc-body">
+      <p class="uc-desc">
+        Manhattan Associates präsentierte auf der Momentum 2026 (Mai, Las Vegas) das <em>Solution Design Studio</em>: AI-Agenten übersetzen Natural-Language-Blueprints direkt in WMS-Konfigurationen und deployen diese. Monate-lange Implementierungsarbeit soll auf Minuten reduziert werden. Agenten haben dabei laut Manhattan "die meisten Funktionen von ActiveWarehouse selbst konfiguriert". Zusätzlich: A2A (Agent-to-Agent) und MCP-Protokoll-Support für Cross-Platform-Agenten.
+      </p>
+      <div class="uc-meta">
+        <span class="meta-chip"><strong>Quelle:</strong> Veridian / Manhattan Partners, Mai–Juni 2026</span>
+        <span class="meta-chip"><strong>AI-Typ:</strong> Agentic AI (Configuration Agents)</span>
+        <span class="meta-chip"><strong>Marktimpact:</strong> Sehr hoch – verändert Implementierungsökonomie</span>
+      </div>
+      <div class="mantis-box aufhol">
+        <div class="box-label">⚠️ Aufholbedarf – Strategisch Kritisch</div>
+        Mantis betont Low-Code-Konfiguration ohne Programmieraufwand – das ist ein starkes Differenzierungsmerkmal. Manhattan geht jedoch einen Schritt weiter: AI-gesteuerte Konfiguration reduziert Implementierungszeit fundamental. Für Mantis könnte ein "LVS Konfigurations-Assistent" auf SimpleChain-AI-Basis ein realistischer nächster Schritt sein – beginnen mit geführten Prozess-Workflows, bevor agentic Konfiguration.
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: WEITERENTWICKELT -->
+  <div class="section-header">
+    <h3>📈 Weiterentwickelt in KW 26</h3>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- UC5: Blue Yonder Warehouse Ops Agent -->
+  <div class="use-case-item" data-vendor="blueyonder" data-verdict="aufhol">
+    <div class="uc-header" onclick="toggleUC(this)">
+      <span class="vendor-tag">BLUE YONDER</span>
+      <span class="uc-title">Warehouse Ops Agent – Autonome Multi-Agent-Orchestrierung</span>
+      <span class="kw-tag kw-dev">📈 Weiterentwickelt</span>
+      <span class="verdict-tag v-aufhol">⚠️ Aufholbedarf</span>
+      <span class="chevron">›</span>
+    </div>
+    <div class="uc-body">
+      <p class="uc-desc">
+        Blue Yonder hat in KW 25/26 (ICON 2026 Nachberichterstattung + Q1 Highlights, 04.06.2026) den <em>Warehouse Ops Agent</em> deutlich erweitert: Von Monitoring & Analytics zu autonomen Aktionen. Der neue <em>BlueYonder Orchestrator</em> koordiniert ein System aus Warehouse-Agenten, Logistics-Agenten und Inventory-Agenten, die cross-domain selbstständig handeln. Partnership mit NVIDIA für proprietäre, domain-spezifische Modelle ("Owned Intelligence Strategie").
+      </p>
+      <div class="uc-meta">
+        <span class="meta-chip"><strong>Quelle:</strong> SiliconAngle / Logistics Viewpoints, 11.06.2026</span>
+        <span class="meta-chip"><strong>AI-Typ:</strong> Multi-Agent Orchestrierung</span>
+        <span class="meta-chip"><strong>Differenzierung:</strong> Proprietäre kleine Modelle für Warehouse-Domäne</span>
+      </div>
+      <div class="mantis-box aufhol">
+        <div class="box-label">⚠️ Aufholbedarf</div>
+        Blue Yonder ist mit dieser Architektur 12–18 Monate voraus. Für Mantis und ecovium: Die SimpleChain-AI-Plattform bietet prinzipiell die richtige Orchestrierungsbasis. Priorität: Einen ersten WMS-spezifischen Agenten (z.B. Ausnahmen-Agent für blockierte Aufträge) als Beachhead entwickeln.
+      </div>
+    </div>
+  </div>
+
+  <!-- UC6: Blue Yonder Workforce Mgmt Knowledge Agent -->
+  <div class="use-case-item" data-vendor="blueyonder" data-verdict="aufhol">
+    <div class="uc-header" onclick="toggleUC(this)">
+      <span class="vendor-tag">BLUE YONDER</span>
+      <span class="uc-title">Workforce Management Knowledge Agent + Mobile WMS App</span>
+      <span class="kw-tag kw-dev">📈 Weiterentwickelt</span>
+      <span class="verdict-tag v-aufhol">⚠️ Aufholbedarf</span>
+      <span class="chevron">›</span>
+    </div>
+    <div class="uc-body">
+      <p class="uc-desc">
+        Auf ICON 2026 (Mai 2026) angekündigt: ein neuer <em>Workforce Management Knowledge Agent</em> als konfigurierter Blue-Yonder-Experte für Lösungsoperatoren. Dazu eine neue mobile Android/iOS-App für Warehouse Manager mit AI-gestützten täglichen Briefings, geleiteter Root-Cause-Analyse und erhöhter Konfigurationsflexibilität. Teams-Integration für Agentic Insights direkt in Kollaborations-Umgebungen.
+      </p>
+      <div class="uc-meta">
+        <span class="meta-chip"><strong>Quelle:</strong> Blue Yonder / SDCE, 19.05.2026 + 04.06.2026</span>
+        <span class="meta-chip"><strong>AI-Typ:</strong> GenAI-Agent + Predictive Briefs</span>
+        <span class="meta-chip"><strong>Plattform:</strong> Mobile-first, Teams-Integration</span>
+      </div>
+      <div class="mantis-box aufhol">
+        <div class="box-label">⚠️ Aufholbedarf</div>
+        Mantis hat starke Dashboard-Funktionalität, aber keine mobile Manager-App mit AI-Briefs. Mobile-first für Schichtleiter ist im DACH-Mittelstand ein wachsendes Bedürfnis. Machbar mit begrenztem Aufwand auf Basis vorhandener Mantis-Daten + SimpleChain.
+      </div>
+    </div>
+  </div>
+
+  <!-- UC7: SAP EWM Joule + AI Slotting -->
+  <div class="use-case-item" data-vendor="sap" data-verdict="mantis">
+    <div class="uc-header" onclick="toggleUC(this)">
+      <span class="vendor-tag">SAP EWM</span>
+      <span class="uc-title">Joule-Copilot + Predictive Labor Demand Planning + AI Slotting</span>
+      <span class="kw-tag kw-dev">📈 Weiterentwickelt</span>
+      <span class="verdict-tag v-mantis">✅ Mantis kann das</span>
+      <span class="chevron">›</span>
+    </div>
+    <div class="uc-body">
+      <p class="uc-desc">
+        SAP EWM hat in S/4HANA Cloud 2025 FPS00 (Release-Datum: Okt. 2026 angekündigt) ML-basierte Predictive Labor Demand Planning eingeführt – lernt aus historischen Workloads mittels Triple-Exponential-Smoothing-Algorithmus. Joule (Natural Language Layer) ermöglicht zudem Outbound-Prozesse per Konversation zu steuern. AI-gestützte Slotting-Optimierung repositioniert Inventar fortlaufend basierend auf Demand-Patterns.
+      </p>
+      <div class="uc-meta">
+        <span class="meta-chip"><strong>Quelle:</strong> SAP Community Blog, Feb. 2026</span>
+        <span class="meta-chip"><strong>AI-Typ:</strong> ML (Predictive Labor) + GenAI (Joule Copilot) + AI Slotting</span>
+        <span class="meta-chip"><strong>Zielgruppe:</strong> SAP S/4HANA Enterprise</span>
+      </div>
+      <div class="mantis-box mantis">
+        <div class="box-label">✅ Mantis kann das – mit anderem Ansatz</div>
+        Mantis bietet Lagervisualisierung, wegoptimierte Kommissionierung und Stock Level Optimization. SAPs ML-Schicht ist zwar tiefer, aber Mantis' Stärke liegt in Flexibilität ohne Programmieraufwand für den DACH-Mittelstand – SAP EWM ist hier kein direkter Konkurrent (anderes Segment, andere TCO). Die Schnittstelle "SAP WM End-of-Life 2027" ist für Mantis eine Migrationschance.
+      </div>
+    </div>
+  </div>
+
+  <!-- UC8: Infor Pick Path Optimization -->
+  <div class="use-case-item" data-vendor="infor" data-verdict="aufhol">
+    <div class="uc-header" onclick="toggleUC(this)">
+      <span class="vendor-tag">INFOR</span>
+      <span class="uc-title">AI Pick Path Optimization + Agentic Orchestrator (Velocity Suite)</span>
+      <span class="kw-tag kw-dev">📈 Weiterentwickelt</span>
+      <span class="verdict-tag v-aufhol">⚠️ Aufholbedarf</span>
+      <span class="chevron">›</span>
+    </div>
+    <div class="uc-body">
+      <p class="uc-desc">
+        Infor hat im April-2026-Release den <em>WMS Pick Path Optimizer</em> in die Velocity Suite integriert: ML + Echtzeit-Signale reduzieren Laufwege um bis zu 25%, beschleunigen Picks um bis zu 15%. Parallel: <em>Infor Agentic Orchestrator</em> als Koordinationsschicht für Industry AI Agents über mehrere Prozesse. Native MCP-Integration.
+      </p>
+      <div class="uc-meta">
+        <span class="meta-chip"><strong>Quelle:</strong> Infor Product Enhancements / TechFinitive, Mai 2026</span>
+        <span class="meta-chip"><strong>AI-Typ:</strong> ML Pick Path + MCP-basierter Agentic Orchestrator</span>
+        <span class="meta-chip"><strong>Messbare KPIs:</strong> –25% Laufwege, +15% Pickgeschwindigkeit</span>
+      </div>
+      <div class="mantis-box aufhol">
+        <div class="box-label">⚠️ Aufholbedarf</div>
+        Mantis berechnet optimale Weg-Zeit-Strecken bereits (Lagervisualisierung in Vogelperspektive), aber ohne ML-Komponente im Echtzeit-Betrieb. Ein ML-gestützter Pick-Path-Optimizer wäre für Mantis LVS mit konkreten ROI-Zahlen (% Laufwegrediktion) ein starkes Verkaufsargument – besonders im 3PL-Segment.
+      </div>
+    </div>
+  </div>
+
+  <!-- UC9: Mecalux Easy AI / GenAI Chat -->
+  <div class="use-case-item" data-vendor="mecalux" data-verdict="opport">
+    <div class="uc-header" onclick="toggleUC(this)">
+      <span class="vendor-tag">MECALUX</span>
+      <span class="uc-title">Easy AI – Conversational WMS Interface (7 Sprachen, KPI-Dashboards)</span>
+      <span class="kw-tag kw-dev">📈 Weiterentwickelt</span>
+      <span class="verdict-tag v-opport">🚀 Opportunität</span>
+      <span class="chevron">›</span>
+    </div>
+    <div class="uc-body">
+      <p class="uc-desc">
+        Mecalux ist im 2026 Gartner MQ (5. Mal gelistet) vertreten und betont <em>Easy AI</em> als Kernfeature: Ein GenAI-Chat erlaubt Nutzern in 7 Sprachen Warehousing-Queries (Bestandsstatus, Auftragsfreigabe, KPI-Dashboard-Erstellung), Aktionen werden nach Bestätigung automatisch ausgeführt. Mecalux und MIT haben eine gemeinsame Studie durchgeführt – 87% der Unternehmen planen höhere AI-Budgets.
+      </p>
+      <div class="uc-meta">
+        <span class="meta-chip"><strong>Quelle:</strong> Mecalux Gartner MQ Announcement, 30.04.2026</span>
+        <span class="meta-chip"><strong>AI-Typ:</strong> GenAI Chat + Action Execution</span>
+        <span class="meta-chip"><strong>Besonderheit:</strong> Mehrsprachig (DACH-relevant: Deutsch)</span>
+      </div>
+      <div class="mantis-box opport">
+        <div class="box-label">🚀 Opportunität – Differenzierung für DACH</div>
+        Mantis könnte hier ein ähnliches Feature mit einem entscheidenden Vorteil anbieten: Deutschsprachiger, DACH-spezifischer Copilot. Mecalux ist primär Lagerregal-/Hardware-Anbieter. Mantis als reiner WMS-Spezialist kann tiefere WMS-Kontext-Qualität in der AI liefern. Umsetzbar via ecovium SimpleChain x AI (Jens Unger, 23.06.2026, hat die Anforderungen bereits öffentlich definiert).
+      </div>
+    </div>
+  </div>
+
+  <!-- UC10: Microsoft Dynamics 365 / Copilot im SCM-Kontext -->
+  <div class="use-case-item" data-vendor="microsoft" data-verdict="mantis">
+    <div class="uc-header" onclick="toggleUC(this)">
+      <span class="vendor-tag">MICROSOFT</span>
+      <span class="uc-title">Copilot Cowork + Agentic SCM (Dynamics 365 / Supply Chain)</span>
+      <span class="kw-tag kw-dev">📈 Weiterentwickelt</span>
+      <span class="verdict-tag v-mantis">✅ Mantis kann das</span>
+      <span class="chevron">›</span>
+    </div>
+    <div class="uc-body">
+      <p class="uc-desc">
+        Microsoft hat am 16. Juni 2026 <em>Copilot Cowork</em> GA (generally available) gelaunt: Ein agentic System für komplexe, multi-step Enterprise-Tasks, das auch Supply-Chain-Daten einschließt. Build 2026 (Anfang Juni) deklarierte Microsoft Copilot zum "agentic operating system". Die Dynamics 365 SCM Functional Consultant Expert (MB-335) Zertifizierung wurde zum 30.06.2026 durch "Agentic AI Business Solutions Architect" ersetzt – Signalwirkung für Marktdurchdringung.
+      </p>
+      <div class="uc-meta">
+        <span class="meta-chip"><strong>Quelle:</strong> Microsoft 365 Blog + Partner Center, 16.06.2026</span>
+        <span class="meta-chip"><strong>AI-Typ:</strong> Agentic AI (Multi-Tool, Long-Running Tasks)</span>
+        <span class="meta-chip"><strong>WMS-Relevanz:</strong> Indirekt – Microsoft als ERP-/Plattform-Layer</span>
+      </div>
+      <div class="mantis-box mantis">
+        <div class="box-label">✅ Mantis kann das – via Partnerschaft / Integration</div>
+        Mantis lässt sich nahtlos an Microsoft-Drittsysteme anbinden (Schnittstellen-Konfigurator, Shop-Systeme, CRM). Microsoft ist für Mantis kein direkter WMS-Konkurrent, sondern Plattform-Layer. Mantis könnte als Copilot-Plugin oder Microsoft-Partner-Integration aktiv werden – das wäre eine relevante Differenzierung für DACH-Kunden im Microsoft-Ökosystem.
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: UNVERÄNDERT / BASELINE -->
+  <div class="section-header">
+    <h3>➡ Baseline-Themen (Unverändert / Kontextergänzung)</h3>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- UC11: Manhattan AI-native Labor Management -->
+  <div class="use-case-item" data-vendor="manhattan" data-verdict="aufhol">
+    <div class="uc-header" onclick="toggleUC(this)">
+      <span class="vendor-tag">MANHATTAN</span>
+      <span class="uc-title">AI-Native Labor Management (Gamification + Real-Time Optimization)</span>
+      <span class="kw-tag kw-same">➡ Unverändert</span>
+      <span class="verdict-tag v-aufhol">⚠️ Aufholbedarf</span>
+      <span class="chevron">›</span>
+    </div>
+    <div class="uc-body">
+      <p class="uc-desc">
+        Manhattan Active Labor Management verbindet Gamification, Incentives und AI-gestützte Task-Planung zu einem vollständig integrierten Employee-Engagement-System. Kombination aus ML-Optimierung, Echtzeit-KPI-Feedback und automatischem Reward-System. 18-facher Gartner Leader – 10–25% Durchsatz-Verbesserung durch AI-Optimierung belegt.
+      </p>
+      <div class="uc-meta">
+        <span class="meta-chip"><strong>Quelle:</strong> Manhattan Associates WMS Overview, 2026</span>
+        <span class="meta-chip"><strong>AI-Typ:</strong> ML Labor Optimization + Gamification Engine</span>
+      </div>
+      <div class="mantis-box aufhol">
+        <div class="box-label">⚠️ Aufholbedarf</div>
+        Mantis hat Dashboard-Überblick und Fortschrittsanzeigen, aber kein integriertes Gamification/Incentive-System. Für den DACH-Mittelstand mit Fachkräftemangel ein relevantes Differenzierungsthema – allerdings nicht im sofortigen MVP-Fokus, da kulturell schwieriger Markt (Betriebsrat-Themen).
+      </div>
+    </div>
+  </div>
+
+  <!-- UC12: Blue Yonder Predictive Slotting -->
+  <div class="use-case-item" data-vendor="blueyonder" data-verdict="mantis">
+    <div class="uc-header" onclick="toggleUC(this)">
+      <span class="vendor-tag">BLUE YONDER</span>
+      <span class="uc-title">Predictive & Advanced Slotting Optimization (AI-driven)</span>
+      <span class="kw-tag kw-same">➡ Unverändert</span>
+      <span class="verdict-tag v-mantis">✅ Mantis kann das</span>
+      <span class="chevron">›</span>
+    </div>
+    <div class="uc-body">
+      <p class="uc-desc">
+        Blue Yonder bietet als Teil des Cognitive WMS Advanced Slotting an: AI bestimmt kontinuierlich optimale Lagerplätze basierend auf Demand-Patterns, Gewicht, Durchlauf-Häufigkeit. Im 2026 MQ erneut als Leader bestätigt für dieses Feature. Keine neuen Ankündigungen in KW 26 – Baseline-Thema.
+      </p>
+      <div class="uc-meta">
+        <span class="meta-chip"><strong>Quelle:</strong> Blue Yonder Gartner MQ, 02.06.2026</span>
+        <span class="meta-chip"><strong>AI-Typ:</strong> ML-basierte Slotting-Optimierung</span>
+      </div>
+      <div class="mantis-box mantis">
+        <div class="box-label">✅ Mantis kann das – Lagervisualisierung & Wegoptimierung</div>
+        Mantis berechnet bereits optimale Weg-Zeit-Strecken durch maßstabsgetreue Lagerdarstellung und unterstützt ABC-Analysen für Bestands- und Lagerplatzoptimierung. Der Unterschied liegt in der ML-Tiefe: Mantis ist regelbasiert konfigurierbar, Blue Yonder lernt kontinuierlich. Für DACH-Mittelstand ist Mantis' Ansatz oft ausreichend und transparenter.
+      </div>
+    </div>
+  </div>
+
+  <!-- UC13: Tecsys / EPG GenAI Chatbot Pilot -->
+  <div class="use-case-item" data-vendor="tecsys-epg" data-verdict="mantis">
+    <div class="uc-header" onclick="toggleUC(this)">
+      <span class="vendor-tag">TECSYS / EPG</span>
+      <span class="uc-title">TecsysIQ AI-Insight Layer + EPG Expert-Positionierung im MQ 2026</span>
+      <span class="kw-tag kw-dev">📈 Weiterentwickelt</span>
+      <span class="verdict-tag v-mantis">✅ Mantis kann das</span>
+      <span class="chevron">›</span>
+    </div>
+    <div class="uc-body">
+      <p class="uc-desc">
+        Tecsys ist im 2026 Gartner MQ als <em>Challenger</em> positioniert – TecsysIQ bringt AI-Insights und Kontrolle direkt in Warehouse-Workflows. Tecsys pilotiert einen GenAI-Chatbot für Warehouse Manager. <em>Ehrhardt Partner Group (EPG)</em> ist als <em>Expert</em> im MQ vertreten (LFS WMS) – bekannt für Automotive, Pharma, Fashion, Logistikdienstleister in DACH. Keine spezifischen KW-26-Ankündigungen, aber starke DACH-Relevanz für Mantis-Monitoring.
+      </p>
+      <div class="uc-meta">
+        <span class="meta-chip"><strong>Quelle:</strong> Tecsys Gartner MQ 2026, Apr. 2026</span>
+        <span class="meta-chip"><strong>DACH-Relevanz:</strong> EPG direkt relevant (DACH-Markt)</span>
+        <span class="meta-chip"><strong>AI-Typ:</strong> GenAI Chatbot (Pilot)</span>
+      </div>
+      <div class="mantis-box mantis">
+        <div class="box-label">✅ Mantis kann das – stärkere DACH-Position</div>
+        Mantis (7. Mal im Gartner MQ als Tochter von ecovium) ist sowohl gegen Tecsys als auch EPG im DACH-Markt gut positioniert. EPG ist der nächste direkte Wettbewerber. Mantis' Low-Code-Konfiguration + MultiMandant-Fähigkeit + 600+ DACH-Kunden sind echte Differenzierungsmerkmale. KI-Monitoring: EPG-AI-Features im nächsten Quartal beobachten.
+      </div>
+    </div>
+  </div>
+
+  <!-- NO RESULTS -->
+  <div class="no-results" id="no-results">Keine Use Cases in dieser Kategorie gefunden.</div>
+
+  <!-- MVP RECOMMENDATIONS -->
+  <div class="mvp-section" id="mvp-section">
+    <h3>🎯 MVP-Empfehlungen für Mantis LVS – Priorisiert nach Umsetzbarkeit</h3>
+
+    <div class="mvp-item">
+      <div class="mvp-prio p1">1</div>
+      <div class="mvp-content">
+        <h4>Mantis Copilot – Deutschsprachiger WMS-Knowledge-Assistent</h4>
+        <p>Auf Basis der SimpleChain-AI-Plattform und ecoviums KI-Teams: Ein RAG-basierter Chat-Assistent, der Mantis-Prozessdokumentation, Kundenanpassungen und SOPs als Wissensbasis nutzt. <strong>Differenzierung:</strong> Deutsch als Primärsprache, Mantis-native Prozesstiefe, DACH-Compliance. Umsetzbar in 2–3 Monaten als Beta-Feature für 5–10 Pilotkunden. Infios und Mecalux sind Benchmarks – beide haben es 2026 shipped.</p>
+      </div>
+    </div>
+
+    <div class="mvp-item">
+      <div class="mvp-prio p1">2</div>
+      <div class="mvp-content">
+        <h4>AI Exception-Agent – Blockierte Aufträge automatisch diagnostizieren</h4>
+        <p>Infios hat vorgemacht, wie das geht. Für Mantis: ML-Analyse der häufigsten Blockierungsursachen (Bestandsdifferenzen, Ressourcenkonflikte, Schnittstellenfehler) mit automatischer Root-Cause-Empfehlung im Supervisor-Dashboard. <strong>ROI-Argument:</strong> Reduzierung von Supervisor-Escalations um 30–50%. Machbar auf Basis vorhandener Mantis-Bewegungshistorie + ERP-Fehlerdaten.</p>
+      </div>
+    </div>
+
+    <div class="mvp-item">
+      <div class="mvp-prio p2">3</div>
+      <div class="mvp-content">
+        <h4>ML Pick-Path-Optimizer mit messbaren KPIs</h4>
+        <p>Infor publiziert konkrete Zahlen (–25% Laufwege, +15% Pick-Speed). Mantis berechnet bereits Weg-Zeit-Strecken. Ausbau zu ML-basiertem Realtime-Optimizer mit A/B-Test-Capability und transparentem ROI-Dashboard. <strong>Verkaufsargument im DACH-Mittelstand:</strong> "Konkrete € und Zeitersparnis, keine Blackbox". SimpleChain-Datenschicht als Basis.</p>
+      </div>
+    </div>
+
+    <div class="mvp-item">
+      <div class="mvp-prio p3">4</div>
+      <div class="mvp-content">
+        <h4>Predictive Labor Demand Planning für Mantis LVS</h4>
+        <p>SAP und Blue Yonder haben es, der DACH-Mittelstand braucht es: ML-basierte Schichtbedarfsplanung auf Basis historischer Auftragsvolumen, Saisonalität und aktueller Pipeline. <strong>Vorteil für Mantis:</strong> 600+ Kunden = große Trainingsdatenbasis, Datenschutz-konformes DACH-Hosting via ecovium. Realisierbar als Add-on-Modul in 4–6 Monaten.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <strong>Mantis LVS · ecovium</strong> | KW 26 AI WMS Competitive Intelligence Report | Erstellt: 01.07.2026<br>
+  Quellen: Business Wire, SDCE, Logistra, Logistics Viewpoints, SiliconAngle, Mecalux, Gartner MQ 2026, ecovium.com | Nur belegbare Quellen ≤ 28.06.2026
+</div>
+
+<script>
+  // Toggle Use Case accordion
+  function toggleUC(header) {
+    const body = header.nextElementSibling;
+    const isOpen = body.classList.contains('open');
+    header.classList.toggle('open', !isOpen);
+    body.classList.toggle('open', !isOpen);
+  }
+
+  // Filter system
+  const tabs = document.querySelectorAll('.tab-btn');
+  const items = document.querySelectorAll('.use-case-item');
+
+  // Count per verdict
+  function updateCounts() {
+    let counts = { all: 0, mantis: 0, aufhol: 0, opport: 0 };
+    items.forEach(item => {
+      counts.all++;
+      const v = item.dataset.verdict;
+      if (v) counts[v] = (counts[v] || 0) + 1;
+    });
+    document.getElementById('cnt-all').textContent = counts.all;
+    document.getElementById('cnt-mantis').textContent = counts.mantis;
+    document.getElementById('cnt-aufhol').textContent = counts.aufhol;
+    document.getElementById('cnt-opport').textContent = counts.opport;
+  }
+  updateCounts();
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const filter = tab.dataset.filter;
+      let visible = 0;
+
+      items.forEach(item => {
+        if (filter === 'all' || item.dataset.verdict === filter) {
+          item.style.display = '';
+          visible++;
+        } else {
+          item.style.display = 'none';
+        }
+      });
+
+      // Show/hide section headers based on visible items
+      document.querySelectorAll('.section-header').forEach(sh => {
+        let nextEl = sh.nextElementSibling;
+        let hasVisible = false;
+        while (nextEl && !nextEl.classList.contains('section-header') && !nextEl.classList.contains('mvp-section') && !nextEl.classList.contains('no-results')) {
+          if (nextEl.style.display !== 'none' && nextEl.classList.contains('use-case-item')) {
+            hasVisible = true;
+          }
+          nextEl = nextEl.nextElementSibling;
+        }
+        sh.style.display = hasVisible ? '' : 'none';
+      });
+
+      const noResults = document.getElementById('no-results');
+      noResults.style.display = visible === 0 ? 'block' : 'none';
+
+      // Always show MVP section
+      document.getElementById('mvp-section').style.display = filter === 'all' || filter === 'opport' || filter === 'aufhol' ? '' : 'none';
+    });
+  });
+</script>
+</body>
+</html>
